@@ -1,6 +1,5 @@
 const getUnsquashedCommits = (context) => {
   const { commits } = context;
-  console.log(commits);
 
   return commits.reduce((acc, commit) => {
     if (!commit.body.startsWith('* ')) {
