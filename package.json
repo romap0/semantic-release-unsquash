@@ -1,0 +1,33 @@
+{
+  "name": "semantic-release-unsquash",
+  "version": "0.1.0",
+  "description": "Wrapper for @semantic-release/commit-analyzer which works with squashed MRs",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romap0/semantic-release-unsquash.git"
+  },
+  "author": "Roman Pavlov <hi@romap0.dev>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/romap0/semantic-release-unsquash/issues"
+  },
+  "homepage": "https://github.com/romap0/semantic-release-unsquash#readme",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "eslint": "eslint src",
+    "eslint:fix": "eslint src --fix"
+  },
+  "dependencies": {
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/release-notes-generator": "^10.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "eslint": "^8.33.0",
+    "eslint-config-universe": "^11.1.1",
+    "jest": "^29.4.2",
+    "prettier": "^2.8.3"
+  }
+}
