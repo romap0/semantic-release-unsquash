@@ -6,18 +6,17 @@ const getUnsquashedCommits = (context) => {
       return [...acc, commit];
     }
 
-    const stashedCommits = commit.body.split('*').map((line) => line.trim());
+    const squashedCommits = commit.body.split('*').map((line) => line.trim());
 
     return [
       ...acc,
-      commit,
-      ...stashedCommits.map((stashedCommit) => {
-        const [subject, , ...body] = stashedCommit.split('\n');
+      ...squashedCommits.map((squashedCommit) => {
+        const [subject, , ...body] = squashedCommit.split('\n');
         return {
           ...commit,
           subject,
           body: body.join('\n'),
-          message: stashedCommit,
+          message: squashedCommit,
         };
       }),
     ];

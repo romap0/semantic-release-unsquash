@@ -35,31 +35,6 @@ describe(getUnsquashedCommits.name, () => {
     expect(getUnsquashedCommits(context)).toMatchInlineSnapshot(`
       [
         {
-          "body": "* fix: restrict job branches
-
-      Foobar string
-
-      * ci: use image with git
-
-      * ci: fix job
-
-      * feat: initial commit
-      ",
-          "hash": "0d63669040808f99dde29bc1b08346ab4e572572",
-          "message": "Init
-
-      * fix: restrict job branches
-
-      Foobar string
-
-      * ci: use image with git
-
-      * ci: fix job
-
-      * feat: initial commit",
-          "subject": "Init",
-        },
-        {
           "body": "",
           "hash": "0d63669040808f99dde29bc1b08346ab4e572572",
           "message": "",
