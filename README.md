@@ -17,23 +17,44 @@ The plugin does not have it`s own configuration, but it passes configuration to 
 ```json
 {
   "plugins": [
-    ["semantic-release-unsquash", {
-      "commitAnalyzerConfig": {
-        "preset": "angular",
-        "parserOpts": {
-          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
-        }
-      },
-      "notesGeneratorConfig": {
-        "preset": "angular",
-        "parserOpts": {
-          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+    [
+      "semantic-release-unsquash",
+      {
+        "commitAnalyzerConfig": {
+          "preset": "angular",
+          "parserOpts": {
+            "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+          }
         },
-        "writerOpts": {
-          "commitsSort": ["subject", "scope"]
+        "notesGeneratorConfig": {
+          "preset": "angular",
+          "parserOpts": {
+            "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+          },
+          "writerOpts": {
+            "commitsSort": ["subject", "scope"]
+          }
         }
       }
-    }]
+    ]
+  ]
+}
+```
+
+### Deactivate the generation of release notes
+
+To deactivate the generation of release notes, e.g. if you use your own / another plugin to generate them, you can do this with :
+
+```json
+{
+  "plugins": [
+    [
+      "semantic-release-unsquash",
+      {
+        "commitAnalyzerConfig": { ... },
+        "notesGeneratorConfig": false
+      }
+    ]
   ]
 }
 ```
