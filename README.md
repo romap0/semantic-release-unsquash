@@ -38,6 +38,24 @@ The plugin does not have it`s own configuration, but it passes configuration to 
 }
 ```
 
+### Deactivate the generation of release notes
+
+To deactivate the generation of release notes, e.g. if you use your own / another plugin to generate them, you can do this with:
+
+```json
+{
+  "plugins": [
+    [
+      "semantic-release-unsquash",
+      {
+        "commitAnalyzerConfig": { },
+        "notesGeneratorConfig": false
+      }
+    ]
+  ]
+}
+```
+
 ### Usage with Github
 
 GitHub automatically adds a list of squashed commit messages to the squash commit message.
