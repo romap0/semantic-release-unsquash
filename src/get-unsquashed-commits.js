@@ -1,7 +1,44 @@
+/**
+ * @typedef {Object} Commit
+ * @property {string} subject
+ * @property {string} [body]
+ * @property {string} [hash]
+ * @property {string} [message]
+ * @property {Object.<string, unknown>} [raw]
+ */
+
+/**
+ * @typedef {Object} GetUnsquashedCommitsConfig
+ * @property {string} [sectionHeading] Heading string that precedes the commit list.
+ * @property {string} [sectionRegexStr] Regex used to extract the commit list section.
+ * @property {string[]} [listItemPrefixes] Bullet prefixes treated as list markers.
+ * @property {string} [listItemPrefix] Single bullet prefix shorthand.
+ * @property {string} [listItemRegexStr] Custom regex to detect list markers.
+ */
+
+/**
+ * @typedef {Object} ListItemMatcher
+ * @property {(line: string) => boolean} isListItem Checks if a line is a list item.
+ * @property {(line: string) => string} stripPrefix Removes the marker from a line.
+ */
+
+/** @type {string[]} Default bullet prefixes recognised when none are provided. */
 const DEFAULT_LIST_ITEM_PREFIXES = ['* ', '- ', '+ '];
 
+/**
+ * Escapes literal characters so they can be embedded inside a regex safely.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
 const escapeForRegex = (value) => value.replace(/[|\\{}()[\]^$+*?.-]/g, '\\$&');
 
+/**
+ * Normalises the configured list item prefixes, falling back to defaults.
+ *
+ * @param {GetUnsquashedCommitsConfig} [config]
+ * @returns {string[]}
+ */
 const getListItemPrefixes = (config = {}) => {
   const prefixes = [];
   const { listItemPrefixes, listItemPrefix } = config;
@@ -25,6 +62,12 @@ const getListItemPrefixes = (config = {}) => {
   return [...new Set(prefixes)];
 };
 
+/**
+ * Builds helpers that can recognise and strip bullet markers from lines.
+ *
+ * @param {GetUnsquashedCommitsConfig} [config]
+ * @returns {ListItemMatcher | null}
+ */
 const createListItemMatcher = (config = {}) => {
   const { listItemRegexStr } = config;
 
@@ -64,6 +107,13 @@ const createListItemMatcher = (config = {}) => {
   };
 };
 
+/**
+ * Extracts the portion of a squashed commit body that contains the commit list.
+ *
+ * @param {string} [body]
+ * @param {GetUnsquashedCommitsConfig} [config]
+ * @returns {string}
+ */
 const selectCommitSection = (body = '', config = {}) => {
   if (!body) {
     return '';
@@ -92,6 +142,13 @@ const selectCommitSection = (body = '', config = {}) => {
   return body;
 };
 
+/**
+ * Converts a commit list section into individual message blocks.
+ *
+ * @param {string} sectionText
+ * @param {ListItemMatcher | null} matcher
+ * @returns {string[]}
+ */
 const splitSquashedMessages = (sectionText, matcher) => {
   if (!sectionText || !matcher) {
     return [];
@@ -123,6 +180,13 @@ const splitSquashedMessages = (sectionText, matcher) => {
   return messages.filter((message) => message.length > 0);
 };
 
+/**
+ * Expands squashed commits into individual commit objects for downstream plugins.
+ *
+ * @param {{ commits: Commit[] }} context Semantic-release context containing commits.
+ * @param {GetUnsquashedCommitsConfig} [pluginConfig]
+ * @returns {Commit[]}
+ */
 const getUnsquashedCommits = (context, pluginConfig = {}) => {
   const { commits } = context;
   const matcher = createListItemMatcher(pluginConfig);
