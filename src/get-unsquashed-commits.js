@@ -1,12 +1,21 @@
-const getUnsquashedCommits = (context) => {
+const getUnsquashedCommits = (context, pluginConfig) => {
+  const { sectionRegexStr } = pluginConfig || {};
   const { commits } = context;
 
   return commits.reduce((acc, commit) => {
-    if (!commit.body.startsWith('* ')) {
+    let commitsBody = commit.body;
+    if (sectionRegexStr) {
+      const sectionRegex = new RegExp(sectionRegexStr, 'g');
+      const match = sectionRegex.exec(commit.body);
+      if (match) {
+        commitsBody = match[1].trim();
+      }
+    }
+    if (!commitsBody.startsWith('* ')) {
       return [...acc, commit];
     }
 
-    const squashedCommits = commit.body.split('*').map((line) => line.trim());
+    const squashedCommits = commitsBody.split('*').map((line) => line.trim());
 
     return [
       ...acc,

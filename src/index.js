@@ -8,8 +8,9 @@ const {
 const { getUnsquashedCommits } = require('./get-unsquashed-commits');
 
 const analyzeCommits = async (pluginConfig, context) => {
-  const { commitAnalyzerConfig } = pluginConfig || {};
-  const commits = getUnsquashedCommits(context);
+  const { commitAnalyzerConfig, getUnsquashedCommitsConfig } =
+    pluginConfig || {};
+  const commits = getUnsquashedCommits(context, getUnsquashedCommitsConfig);
 
   return originalAnalyzeCommits(commitAnalyzerConfig ?? {}, {
     ...context,
@@ -18,9 +19,12 @@ const analyzeCommits = async (pluginConfig, context) => {
 };
 
 const generateNotes = async (pluginConfig, context) => {
-  const { notesGeneratorConfig } = pluginConfig || {};
-  if (notesGeneratorConfig === false) { return }
-  const commits = getUnsquashedCommits(context);
+  const { notesGeneratorConfig, getUnsquashedCommitsConfig } =
+    pluginConfig || {};
+  if (notesGeneratorConfig === false) {
+    return;
+  }
+  const commits = getUnsquashedCommits(context, getUnsquashedCommitsConfig);
 
   return originalGenerateNotes(notesGeneratorConfig ?? {}, {
     ...context,
