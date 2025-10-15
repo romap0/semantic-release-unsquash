@@ -19,7 +19,9 @@ const analyzeCommits = async (pluginConfig, context) => {
 
 const generateNotes = async (pluginConfig, context) => {
   const { notesGeneratorConfig } = pluginConfig || {};
-  if (notesGeneratorConfig === false) { return }
+  if (notesGeneratorConfig === false) {
+    return;
+  }
   const commits = getUnsquashedCommits(context);
 
   return originalGenerateNotes(notesGeneratorConfig ?? {}, {
