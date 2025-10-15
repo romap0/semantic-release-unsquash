@@ -38,6 +38,31 @@ The plugin does not have it`s own configuration, but it passes configuration to 
 }
 ```
 
+### Using conventionalcommits preset
+
+If you want to use the `conventionalcommits` preset, you need to install it as an additional dependency:
+
+```bash
+$ npm install -D conventional-changelog-conventionalcommits
+```
+
+Then you can use it in your configuration:
+
+```json
+{
+  "plugins": [
+    ["semantic-release-unsquash", {
+      "commitAnalyzerConfig": {
+        "preset": "conventionalcommits"
+      },
+      "notesGeneratorConfig": {
+        "preset": "conventionalcommits"
+      }
+    }]
+  ]
+}
+```
+
 ### Deactivate the generation of release notes
 
 To deactivate the generation of release notes, e.g. if you use your own / another plugin to generate them, you can do this with:
