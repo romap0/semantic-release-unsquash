@@ -70,6 +70,65 @@ describe(getUnsquashedCommits.name, () => {
     `);
   });
 
+  it('should leave commit unchanged when the first non-empty line is not a list item', () => {
+    const commits = [
+      {
+        subject: 'docs: update README',
+        body:
+          'docs: update README with deployment steps\n' +
+          '\n' +
+          '* chore: unrelated bullet that should be ignored\n',
+        hash: 'd5b14fc5f5438214cb643b846579c94f0bd68e24',
+        message:
+          'docs: update README\n' +
+          '\n' +
+          'docs: update README with deployment steps\n' +
+          '\n' +
+          '* chore: unrelated bullet that should be ignored',
+      },
+    ];
+    const context = { commits };
+
+    expect(getUnsquashedCommits(context)).toEqual(commits);
+  });
+
+  it('should split when the first list item follows leading blank lines', () => {
+    const commits = [
+      {
+        subject: 'chore: release v1.2.3',
+        body: '\n* fix: correct typo in docs\n* feat: add deployment script',
+        hash: 'd5b14fc5f5438214cb643b846579c94f0bd68e24',
+        message:
+          'chore: release v1.2.3\n' +
+          '\n' +
+          '* fix: correct typo in docs\n' +
+          '* feat: add deployment script',
+      },
+    ];
+    const context = { commits };
+
+    expect(getUnsquashedCommits(context)).toEqual([
+      {
+        ...commits[0],
+        subject: '',
+        body: '',
+        message: '',
+      },
+      {
+        ...commits[0],
+        subject: 'fix: correct typo in docs',
+        body: '',
+        message: 'fix: correct typo in docs',
+      },
+      {
+        ...commits[0],
+        subject: 'feat: add deployment script',
+        body: '',
+        message: 'feat: add deployment script',
+      },
+    ]);
+  });
+
   describe('with pluginConfig', () => {
     it('should return unsquashed commits with sectionRegex', () => {
       const commits = [

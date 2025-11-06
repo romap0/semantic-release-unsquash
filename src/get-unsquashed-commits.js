@@ -190,10 +190,25 @@ const splitSquashedMessages = (sectionText, matcher) => {
 const getUnsquashedCommits = (context, pluginConfig = {}) => {
   const { commits } = context;
   const matcher = createListItemMatcher(pluginConfig);
+  const hasSectionRegex =
+    typeof pluginConfig.sectionRegexStr === 'string' &&
+    pluginConfig.sectionRegexStr.length > 0;
+  const hasSectionHeading =
+    typeof pluginConfig.sectionHeading === 'string' &&
+    pluginConfig.sectionHeading.length > 0;
+  const shouldVerifyFirstLine = !hasSectionRegex && !hasSectionHeading;
 
   return commits.reduce((acc, commit) => {
     const body = commit.body ?? '';
     const sectionText = selectCommitSection(body, pluginConfig);
+    if (shouldVerifyFirstLine) {
+      const firstNonEmptyLine =
+        sectionText.split(/\r?\n/).find((line) => line.trim().length > 0) ?? '';
+
+      if (!matcher?.isListItem(firstNonEmptyLine)) {
+        return [...acc, commit];
+      }
+    }
     const squashedMessages = splitSquashedMessages(sectionText, matcher);
 
     if (squashedMessages.length === 0) {
