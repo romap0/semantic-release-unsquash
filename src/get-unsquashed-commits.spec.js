@@ -167,7 +167,8 @@ describe(getUnsquashedCommits.name, () => {
         sectionRegexStr: '### Changes(?:\n|\\n|\\\\n){2}([\\s\\S]*?)(?=$)',
       };
 
-      expect(getUnsquashedCommits(context, pluginConfig)).toMatchInlineSnapshot(`
+      expect(getUnsquashedCommits(context, pluginConfig))
+        .toMatchInlineSnapshot(`
         [
           {
             "body": "",
@@ -318,7 +319,8 @@ describe(getUnsquashedCommits.name, () => {
         },
         {
           ...commits[0],
-          subject: 'refactor: move workflow to script for better testing process (f8c544a)',
+          subject:
+            'refactor: move workflow to script for better testing process (f8c544a)',
           body: '',
           message:
             'refactor: move workflow to script for better testing process (f8c544a)',
@@ -366,7 +368,8 @@ describe(getUnsquashedCommits.name, () => {
         },
         {
           ...commits[0],
-          subject: 'refactor: move workflow to script for better testing process (f8c544a)',
+          subject:
+            'refactor: move workflow to script for better testing process (f8c544a)',
           body: 'body of the first commit',
           message:
             'refactor: move workflow to script for better testing process (f8c544a)\n  \n  body of the first commit',
