@@ -210,7 +210,9 @@ const getUnsquashedCommits = (context, pluginConfig = {}) => {
     pluginConfig.sectionHeading.length > 0;
   const shouldVerifyFirstLine = !hasSectionRegex && !hasSectionHeading;
 
-  return commits.reduce((acc, commit) => {
+  const unsquashedCommits = [];
+
+  for (const commit of commits) {
     const body = commit.body ?? '';
     const sectionText = selectCommitSection(body, pluginConfig);
     if (shouldVerifyFirstLine) {
@@ -218,13 +220,15 @@ const getUnsquashedCommits = (context, pluginConfig = {}) => {
         sectionText.split(/\r?\n/).find((line) => line.trim().length > 0) ?? '';
 
       if (!matcher?.isListItem(firstNonEmptyLine)) {
-        return [...acc, commit];
+        unsquashedCommits.push(commit);
+        continue;
       }
     }
     const squashedMessages = splitSquashedMessages(sectionText, matcher);
 
     if (squashedMessages.length === 0) {
-      return [...acc, commit];
+      unsquashedCommits.push(commit);
+      continue;
     }
 
     const unsquashed = squashedMessages
@@ -248,7 +252,8 @@ const getUnsquashedCommits = (context, pluginConfig = {}) => {
       .filter(Boolean);
 
     if (unsquashed.length === 0) {
-      return [...acc, commit];
+      unsquashedCommits.push(commit);
+      continue;
     }
 
     const placeholderCommit = {
@@ -258,8 +263,10 @@ const getUnsquashedCommits = (context, pluginConfig = {}) => {
       message: '',
     };
 
-    return [...acc, placeholderCommit, ...unsquashed];
-  }, []);
+    unsquashedCommits.push(placeholderCommit, ...unsquashed);
+  }
+
+  return unsquashedCommits;
 };
 
 module.exports = { getUnsquashedCommits };
