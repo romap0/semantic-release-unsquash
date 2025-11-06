@@ -246,6 +246,47 @@ describe(getUnsquashedCommits.name, () => {
       ]);
     });
 
+    it('should fall back to sectionHeading when sectionRegexStr is invalid', () => {
+      const commits = [
+        {
+          subject: 'refactor: invalid regex',
+          body:
+            '### Changes\n' +
+            '\n' +
+            '* fix: patch issue (1234567)\n' +
+            '* feat: add improvement (7654321)\n',
+          hash: 'd5b14fc5f5438214cb643b846579c94f0bd68e24',
+          message: 'refactor: invalid regex',
+        },
+      ];
+      const context = { commits };
+      const pluginConfig = {
+        sectionRegexStr: '[',
+        sectionHeading: '### Changes',
+      };
+
+      expect(getUnsquashedCommits(context, pluginConfig)).toEqual([
+        {
+          ...commits[0],
+          subject: '',
+          body: '',
+          message: '',
+        },
+        {
+          ...commits[0],
+          subject: 'fix: patch issue (1234567)',
+          body: '',
+          message: 'fix: patch issue (1234567)',
+        },
+        {
+          ...commits[0],
+          subject: 'feat: add improvement (7654321)',
+          body: '',
+          message: 'feat: add improvement (7654321)',
+        },
+      ]);
+    });
+
     it('should use sectionHeading when provided', () => {
       const commits = [
         {
@@ -337,6 +378,46 @@ describe(getUnsquashedCommits.name, () => {
           body: 'body of the second commit',
           message:
             'docs: added JSDoc blocks describing function purpose, inputs, and outputs so the shared action module is self-documented (40129ad)\n  \n  body of the second commit',
+        },
+      ]);
+    });
+
+    it('should fall back to defaults when listItemRegexStr is invalid', () => {
+      const commits = [
+        {
+          subject: 'feat: fallback',
+          body: '* fix: address crash\n* chore: tidy scripts\n',
+          hash: 'd5b14fc5f5438214cb643b846579c94f0bd68e24',
+          message:
+            'feat: fallback\n' +
+            '\n' +
+            '* fix: address crash\n' +
+            '* chore: tidy scripts\n',
+        },
+      ];
+      const context = { commits };
+      const pluginConfig = {
+        listItemRegexStr: '[',
+      };
+
+      expect(getUnsquashedCommits(context, pluginConfig)).toEqual([
+        {
+          ...commits[0],
+          subject: '',
+          body: '',
+          message: '',
+        },
+        {
+          ...commits[0],
+          subject: 'fix: address crash',
+          body: '',
+          message: 'fix: address crash',
+        },
+        {
+          ...commits[0],
+          subject: 'chore: tidy scripts',
+          body: '',
+          message: 'chore: tidy scripts',
         },
       ]);
     });

@@ -72,17 +72,25 @@ const createListItemMatcher = (config = {}) => {
   const { listItemRegexStr } = config;
 
   if (typeof listItemRegexStr === 'string' && listItemRegexStr.length > 0) {
-    const userRegex = new RegExp(listItemRegexStr);
-    return {
-      isListItem(line) {
-        userRegex.lastIndex = 0;
-        return userRegex.test(line);
-      },
-      stripPrefix(line) {
-        userRegex.lastIndex = 0;
-        return line.replace(userRegex, '');
-      },
-    };
+    let userRegex;
+    try {
+      userRegex = new RegExp(listItemRegexStr);
+    } catch (_) {
+      userRegex = null;
+    }
+
+    if (userRegex) {
+      return {
+        isListItem(line) {
+          userRegex.lastIndex = 0;
+          return userRegex.test(line);
+        },
+        stripPrefix(line) {
+          userRegex.lastIndex = 0;
+          return line.replace(userRegex, '');
+        },
+      };
+    }
   }
 
   const prefixes = getListItemPrefixes(config);
@@ -122,13 +130,17 @@ const selectCommitSection = (body = '', config = {}) => {
   const { sectionRegexStr, sectionHeading } = config;
 
   if (typeof sectionRegexStr === 'string' && sectionRegexStr.length > 0) {
-    const sectionRegex = new RegExp(sectionRegexStr, 'g');
-    const match = sectionRegex.exec(body);
-    if (match) {
-      const capturedGroup = match
-        .slice(1)
-        .find((value) => typeof value === 'string' && value !== undefined);
-      return (capturedGroup ?? match[0]).trim();
+    try {
+      const sectionRegex = new RegExp(sectionRegexStr, 'g');
+      const match = sectionRegex.exec(body);
+      if (match) {
+        const capturedGroup = match
+          .slice(1)
+          .find((value) => typeof value === 'string' && value !== undefined);
+        return (capturedGroup ?? match[0]).trim();
+      }
+    } catch (_) {
+      // Fall through to heading/default behavior
     }
   }
 
