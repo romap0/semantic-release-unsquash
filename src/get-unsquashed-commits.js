@@ -23,7 +23,7 @@
  */
 
 /** @type {string[]} Default bullet prefixes recognised when none are provided. */
-const DEFAULT_LIST_ITEM_PREFIXES = ['* ', '- ', '+ '];
+const DEFAULT_LIST_ITEM_PREFIXES = ['* '];
 
 /**
  * Escapes literal characters so they can be embedded inside a regex safely.

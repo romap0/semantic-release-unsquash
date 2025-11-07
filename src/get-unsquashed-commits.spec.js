@@ -129,6 +129,24 @@ describe(getUnsquashedCommits.name, () => {
     ]);
   });
 
+  it('should not split when only "-" bullets are present without custom prefixes', () => {
+    const commits = [
+      {
+        subject: 'docs: changelog updates',
+        body: '- fix: adjust workflow docs\n- chore: cleanup unused scripts\n',
+        hash: '0d63669040808f99dde29bc1b08346ab4e572572',
+        message:
+          'docs: changelog updates\n' +
+          '\n' +
+          '- fix: adjust workflow docs\n' +
+          '- chore: cleanup unused scripts\n',
+      },
+    ];
+    const context = { commits };
+
+    expect(getUnsquashedCommits(context)).toEqual(commits);
+  });
+
   describe('with pluginConfig', () => {
     it('should return unsquashed commits with sectionRegex', () => {
       const commits = [
@@ -308,6 +326,7 @@ describe(getUnsquashedCommits.name, () => {
       const context = { commits };
       const pluginConfig = {
         sectionHeading: '### Changes',
+        listItemPrefixes: ['- '],
       };
 
       expect(getUnsquashedCommits(context, pluginConfig)).toEqual([
