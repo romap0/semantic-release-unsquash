@@ -98,7 +98,8 @@ and expands squashed commits inside the merge commit body:
 - `sectionRegexStr`: alternative regex selector. If it contains a capture
   group, that content is used; otherwise the matched substring is parsed.
 - `listItemPrefixes` / `listItemPrefix`: configure bullet prefixes if you use
-  something other than the defaults (`* `, `- `, `+ `).
+  something other than the default (`* `). For example, specify `["- "]` if
+  your squashed commit list uses dash bullets.
 - `listItemRegexStr`: full custom matcher for bullets (takes priority over
   prefixes), useful for compact formats such as `*feat: ...`.
 
