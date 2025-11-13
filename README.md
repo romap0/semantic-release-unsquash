@@ -69,3 +69,39 @@ To use this plugin with GitLab, you need to go to your project settings and in t
 
 %{all_commits}
 ```
+
+## Configuring commit section detection
+
+You can pass `getUnsquashedCommitsConfig` to fine‑tune how the plugin finds
+and expands squashed commits inside the merge commit body:
+
+```json
+{
+  "plugins": [
+    [
+      "semantic-release-unsquash",
+      {
+        "getUnsquashedCommitsConfig": {
+          "sectionHeading": "### Changes",
+          "sectionRegexStr": "### Changes(?:\\n|\\r\\n){2}([\\s\\S]*?)(?=$)",
+          "listItemPrefixes": ["* ", "- "],
+          "listItemRegexStr": "^\\s*\\*"
+        }
+      }
+    ]
+  ]
+}
+```
+
+- `sectionHeading`: literal string to locate the start of the commit list.
+  Everything after the heading (trimmed) is parsed.
+- `sectionRegexStr`: alternative regex selector. If it contains a capture
+  group, that content is used; otherwise the matched substring is parsed.
+- `listItemPrefixes` / `listItemPrefix`: configure bullet prefixes if you use
+  something other than the default (`* `). For example, specify `["- "]` if
+  your squashed commit list uses dash bullets.
+- `listItemRegexStr`: full custom matcher for bullets (takes priority over
+  prefixes), useful for compact formats such as `*feat: ...`.
+
+These options can be combined. Multi-line commit bodies remain attached to the
+bullet that introduced them.
